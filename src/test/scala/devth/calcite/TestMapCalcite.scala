@@ -25,20 +25,20 @@ class TestMapCalcite extends FunSuite with StrictLogging {
   rootSchema.add(schema.name, schema)
   val statement = connection.createStatement();
 
-  test("Select everything") {
+  test("Select everything: select * from \"foo\".\"foo\"") {
     printResults(statement.executeQuery("""
       select * from "foo"."foo"
     """))
   }
 
-  test("Select a few things") {
+  test("Select a few things: select _MAP['name'], _MAP['address']['city'] from \"foo\".\"foo\"") {
     val results: ResultSet = statement.executeQuery("""
       select _MAP['name'], _MAP['address']['city'] from "foo"."foo"
       """)
     printResults(results)
   }
 
-  test("Aggregate") {
+  test("Aggregate: select count(_MAP['name']) as rowcount from \"foo\".\"foo\"") {
     // count
     val countResult = statement.executeQuery("""
       select count(_MAP['name']) as rowcount from "foo"."foo"
