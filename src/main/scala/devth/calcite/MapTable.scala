@@ -34,12 +34,8 @@ class MapTable(name: String) extends AbstractQueryableTable(classOf[Seq[AnyRef]]
           new MapEnumerator().asInstanceOf[Enumerator[AnyRef]]
       }
 
-  override def toRel(context: RelOptTable.ToRelContext, relOptTable: RelOptTable): RelNode = {
-    new JavaRules.EnumerableTableAccessRel(context.getCluster(),
-      context.getCluster().traitSetOf(EnumerableConvention.INSTANCE),
-      relOptTable,
-      getElementType.asInstanceOf[Class[_]])
-  }
+  override def toRel(context: RelOptTable.ToRelContext, relOptTable: RelOptTable): RelNode =
+    new MapTableScan(context.getCluster(), relOptTable, this)
 
   def project(fields: java.util.List[String]): Enumerable[AnyRef] = {
     new AbstractEnumerable[AnyRef] {
