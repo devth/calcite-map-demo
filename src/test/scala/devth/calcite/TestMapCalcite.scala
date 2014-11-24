@@ -38,13 +38,13 @@ class TestMapCalcite extends FunSuite with StrictLogging {
     printResults(results)
   }
 
-  test("Aggregate: select count(_MAP['name']) as rowcount from \"foo\".\"foo\"") {
-    // count
-    val countResult = statement.executeQuery("""
-      select count(_MAP['name']) as rowcount from "foo"."foo"
-    """)
-    printResults(countResult)
-  }
+  // test("Aggregate: select count(_MAP['name']) as rowcount from \"foo\".\"foo\"") {
+  //   // count
+  //   val countResult = statement.executeQuery("""
+  //     select count(_MAP['name']) as rowcount from "foo"."foo"
+  //   """)
+  //   printResults(countResult)
+  // }
 
   def printResults(results: ResultSet) {
     val meta = results.getMetaData

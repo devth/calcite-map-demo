@@ -1,0 +1,11 @@
+{
+  version: '1.0',
+  defaultSchema: 'map',
+  schemas: [
+    {
+      type: 'custom',
+      name: 'map',
+      factory: 'devth.calcite.MapSchemaFactory'
+    }
+  ]
+}

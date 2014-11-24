@@ -3,13 +3,15 @@ package devth.calcite
 import net.hydromatic.linq4j.Enumerator
 import scala.collection.JavaConverters._
 import scala.collection.mutable
+import com.typesafe.scalalogging.StrictLogging
 
 import java.util.{Map => JMap, List => JList, HashMap => JHashMap}
 
-class MapEnumerator(fields: JList[String] = Seq.empty.asJava) extends Enumerator[AnyRef] {
+class MapEnumerator(fields: JList[String] = Seq.empty.asJava) extends Enumerator[AnyRef]
+  with StrictLogging {
 
   // TODO: only lookup projected fields in `fields`
-
+  logger.info(s"MapEnumerator with fields $fields")
   type Row = JMap[String, java.lang.Object]
 
   // Demonstrates:

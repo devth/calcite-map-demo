@@ -33,41 +33,35 @@ import com.typesafe.scalalogging.StrictLogging
 
 
 class MapTableScan(val cluster: RelOptCluster,
+  traitSet: RelTraitSet,
   table: RelOptTable,
   val mapTable: MapTable,
   val fields: JList[String] = new java.util.ArrayList[String])
-  extends TableAccessRelBase(cluster, cluster.traitSetOf(EnumerableConvention.INSTANCE), table)
-  with EnumerableRel with StrictLogging {
+  extends TableAccessRelBase(cluster, traitSet, table)
+  with MapRel with StrictLogging {
 
   override def register(planner: RelOptPlanner) {
-    planner.addRule(new MapProjectRule)
+    planner.addRule(MapToEnumerableConverterRule.Instance)
+    planner.addRule(MapProjectRule.Instance)
   }
 
-  // What is this?
-  override def deriveRowType(): RelDataType = {
-    logger.debug("Table scan derive row type call received.")
-    val fieldList = table.getRowType().getFieldList()
-    val builder = getCluster().getTypeFactory().builder()
-    fieldList.asScala.foreach { field => builder.add(field) }
-    builder.build()
-  }
+  // override def deriveRowType(): RelDataType = projectRowType
 
+  def implement(implementor: MapRel.Implementor) {
 
-  def implement(implementor: EnumerableRelImplementor, pref:
-    EnumerableRel.Prefer): EnumerableRel.Result = {
+    // val physType = PhysTypeImpl.of(implementor.getTypeFactory(),
+    //   getRowType(), pref.preferCustom())
+    // val project: Method = classOf[MapTable].getMethod("project", classOf[JList[String]])
+    // implementor.result(
+    //   physType,
+    //   Blocks.toBlock(
+    //     Expressions.call(
+    //       table.getExpression(classOf[MapTable]),
+    //       project,
+    //       Expressions.constant(fields))))
 
-    val physType = PhysTypeImpl.of(implementor.getTypeFactory(),
-      getRowType(), pref.preferCustom())
-
-    val project: Method = classOf[MapTable].getMethod("project", classOf[JList[String]])
-
-    implementor.result(
-      physType,
-      Blocks.toBlock(
-        Expressions.call(
-          table.getExpression(classOf[MapTable]),
-          project,
-          Expressions.constant(fields))))
+    implementor.mapTable = mapTable
+    implementor.table = table
   }
 
 

@@ -34,10 +34,13 @@ class MapTable(name: String) extends AbstractQueryableTable(classOf[Seq[AnyRef]]
           new MapEnumerator().asInstanceOf[Enumerator[AnyRef]]
       }
 
-  override def toRel(context: RelOptTable.ToRelContext, relOptTable: RelOptTable): RelNode =
-    new MapTableScan(context.getCluster(), relOptTable, this)
+  override def toRel(context: RelOptTable.ToRelContext, relOptTable: RelOptTable): RelNode = {
+    val cluster = context.getCluster
+    new MapTableScan(cluster, cluster.traitSetOf(MapRel.CONVENTION),
+      relOptTable, this)
+  }
 
-  def project(fields: java.util.List[String]): Enumerable[AnyRef] = {
+  def project(fields: JList[String]): Enumerable[AnyRef] = {
     new AbstractEnumerable[AnyRef] {
       def enumerator(): Enumerator[AnyRef] =
         new MapEnumerator(fields).asInstanceOf[Enumerator[AnyRef]]
