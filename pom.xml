@@ -288,10 +288,7 @@
         <version>1.0</version>
         <configuration>
           <systemProperties>
-            <property>
-              <name>calcite.debug</name>
-              <value>true</value>
-            </property>
+            <calcite.debug>true</calcite.debug>
           </systemProperties>
           <systemPropertyVariables>
             <calcite.debug>true</calcite.debug>
