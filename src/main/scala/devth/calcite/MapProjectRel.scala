@@ -24,9 +24,8 @@ class MapProjectRel(cluster: RelOptCluster, traitSet: RelTraitSet,
     exps: java.util.List[RexNode], rowType: RelDataType): ProjectRelBase =
     new MapProjectRel(getCluster(), traitSet, input, exps, rowType, flags)
 
-  // @Override public RelOptCost computeSelfCost(RelOptPlanner planner) {
-  //   return super.computeSelfCost(planner).multiplyBy(0.1);
-  // }
+  override def computeSelfCost(planner: RelOptPlanner): RelOptCost =
+    super.computeSelfCost(planner).multiplyBy(0.1)
 
   def implement(implementor: MapRel.Implementor) {
     implementor.visitChild(0, getChild())
