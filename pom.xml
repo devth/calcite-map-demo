@@ -287,6 +287,12 @@
         <artifactId>scalatest-maven-plugin</artifactId>
         <version>1.0</version>
         <configuration>
+          <systemProperties>
+            <property>
+              <name>calcite.debug</name>
+              <value>true</value>
+            </property>
+          </systemProperties>
           <systemPropertyVariables>
             <calcite.debug>true</calcite.debug>
           </systemPropertyVariables>
