@@ -17,6 +17,7 @@ import java.lang.reflect.Method
 import java.util.{List => JList}
 
 import scala.collection.JavaConverters._
+import com.typesafe.scalalogging.StrictLogging
 
 import net.hydromatic.optiq.rules.java.EnumerableRel.{Result, Prefer}
 
@@ -24,7 +25,7 @@ class MapToEnumerableConverter(cluster: RelOptCluster,
     traits: RelTraitSet,
     input: RelNode)
   extends ConverterRelImpl(cluster, ConventionTraitDef.INSTANCE, traits, input)
-  with EnumerableRel {
+  with StrictLogging with EnumerableRel {
 
   override def copy(traitSet: RelTraitSet, inputs: java.util.List[RelNode]): RelNode =
     new MapToEnumerableConverter(getCluster, traitSet, inputs.get(0))
@@ -38,33 +39,27 @@ class MapToEnumerableConverter(cluster: RelOptCluster,
       implementor.getTypeFactory(), rowType,
       pref.prefer(JavaRowFormat.CUSTOM))
 
-    // val project: Method = classOf[MapTable].getMethod("project")
+    val fields = mapImplementor.getFields
+    logger.info(s"fields from implementor: $fields")
 
-    // TODO figure out why empty - problem with ProjectRel not being fired?
-    val whyIsThisEmpty = mapImplementor.getFields.asJava
-    val fields = Seq("name")
+    // `fields` should actually be a tree-like data structure that could
+    // represent nested projections:
+    // ITEM(ITEM($0, 'address'), 'city')" -> "EXPR$0
 
-    // HOWTO?
+    // How could such a structure be represented in Linq4j?
+    // Here's an example of an Algebraic Data Type in Scala that could represent
+    // it well, but could not (guessing?) be represented in Linq4j:
+    // Represents a potentially nested projection (e.g. address.city )
+    sealed trait NestedProjection
+    case class Field(fieldName: String) extends NestedProjection
+    case class NestedField(field: Field, child: NestedProjection) extends NestedProjection
+
+
     val fieldConstantList: JList[Expression] = constantList(fields)
     val arrayExpr: NewArrayExpression =
       Expressions.newArrayInit(classOf[String], fieldConstantList)
     val fieldsExpression: MethodCallExpression = Expressions.call(
       BuiltinMethod.ARRAYS_AS_LIST.method, arrayExpr)
-
-    // constantArrayList(fields, classOf[String])
-    // Expressions.call(
-    //   BuiltinMethod.ARRAYS_AS_LIST,
-    //   Expressions.newArrayInit(classOf[String], cons
-
-    // enumImplementor.result(physType,
-    //   Blocks.toBlock(Expressions.call(factTable.getExpression(OLAPTable.class),
-    //     "executeHiveQuery", enumImplementor.getRootExpression())));
-
-    // return implementor.result(
-    //     physType,
-    //     Blocks.toBlock(
-    //         Expressions.call(table.getExpression(CsvTable.class), "project",
-    //             Expressions.constant(fields))));
 
     val project: Method = classOf[MapTable].getMethod("project", classOf[JList[String]])
 
@@ -76,18 +71,7 @@ class MapToEnumerableConverter(cluster: RelOptCluster,
 
   }
 
-  /** E.g. {@code constantList("x", "y")} returns
-   * {@code {ConstantExpression("x"), ConstantExpression("y")}}. */
-  private def constantList(values: Seq[String]): JList[Expression] = {
-    values.map { v =>
-      Expressions.constant(v).asInstanceOf[Expression] }.asJava
-  }
-
-  // private def constantArrayList(values: JList[_], clazz: Class[_]): MethodCallExpression =
-  //   Expressions.call(
-  //     BuiltinMethod.ARRAYS_AS_LIST.method,
-  //     Expressions.newArrayInit(clazz, constantList(values)))
-
-
+  private def constantList(values: Seq[String]): JList[Expression] =
+    values.map { v => Expressions.constant(v).asInstanceOf[Expression] }.asJava
 
 }

@@ -30,21 +30,10 @@ class MapProjectRel(cluster: RelOptCluster, traitSet: RelTraitSet,
   def implement(implementor: MapRel.Implementor) {
     implementor.visitChild(0, getChild())
 
-
-    //  grab the fields and save them on the implementor
+    //  How to represent nested fields? e.g.
+    //  ITEM(ITEM($0, 'address'), 'city')" -> "EXPR$0
     val fields: Seq[String] = getNamedProjects.asScala.map { pair => pair.right }
     implementor.addFields(fields)
 
-    // for (Pair<RexNode, String> pair : getNamedProjects()) {
-    //   final String name = pair.right;
-    //   final String expr = pair.left.accept(translator);
-    //   items.add(expr.equals("'$" + name + "'")
-    //       ? MapRules.maybeQuote(name) + ": 1"
-    //       : MapRules.maybeQuote(name) + ": " + expr);
-    // }
-    // final String findString = Util.toString(items, "{", ", ", "}");
-    // final String aggregateString = "{$project: " + findString + "}";
-    // final Pair<String, String> op = Pair.of(findString, aggregateString);
-    // implementor.add(op.left, op.right);
   }
 }

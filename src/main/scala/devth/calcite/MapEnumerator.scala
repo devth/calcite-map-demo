@@ -26,6 +26,8 @@ class MapEnumerator(fields: JList[String] = Seq.empty.asJava) extends Enumerator
     Map("name" -> "norf", "address" -> Map("city" -> "new york city", "state" -> "ny").asJava)
   ).map(_.asJava)
 
+  // Calcite doesn't like this because we're not returning the expected
+  // [Ljava.lang.Object], but we could easily fix that...
   val iterator = data.toIterator
 
   private var _current: AnyRef = null

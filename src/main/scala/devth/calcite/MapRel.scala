@@ -22,18 +22,12 @@ object MapRel {
     var table: RelOptTable = _
     var mapTable: MapTable = _
 
-    // hold whatever data structures we need here to pass into the query
+    // hold whatever data structures we need here to pass into the enumerator
+    // later on
     @volatile private var fields: Seq[String] = Seq.empty
-
     def addFields(fs: Seq[String]) = fields ++= fs
-
     def getFields = fields
 
-    // RelOptTable table;
-    // MapTable mongoTable;
-    // public void add(String findOp, String aggOp) {
-    //   list.add(Pair.of(findOp, aggOp));
-    // }
     def visitChild(ordinal: Int, input: RelNode) {
       assert(ordinal == 0) // ?
       input.asInstanceOf[MapRel].implement(this)

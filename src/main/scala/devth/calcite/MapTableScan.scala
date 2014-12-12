@@ -40,6 +40,9 @@ class MapTableScan(val cluster: RelOptCluster,
   extends TableAccessRelBase(cluster, traitSet, table)
   with MapRel with StrictLogging {
 
+  assert(getConvention() == MapRel.CONVENTION)
+  assert(mapTable != null)
+
   override def register(planner: RelOptPlanner) {
     planner.addRule(MapToEnumerableConverterRule.Instance)
     planner.addRule(MapProjectRule.Instance)
