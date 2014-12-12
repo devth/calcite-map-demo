@@ -42,7 +42,7 @@ class MapToEnumerableConverter(cluster: RelOptCluster,
     val fields = mapImplementor.getFields
     logger.info(s"fields from implementor: $fields")
 
-    // `fields` should actually be a tree-like data structure that could
+    // `fields` should actually be a nested-list-like data structure that could
     // represent nested projections:
     // ITEM(ITEM($0, 'address'), 'city')" -> "EXPR$0
 
