@@ -52,20 +52,20 @@ class MapToEnumerableConverter(cluster: RelOptCluster,
     // case class NestedField(field: Field, child: NestedProjection) extends NestedProjection
 
 
-    val projectsConstantList: JList[Expression] = projects.asScala.map { p =>
-      implementor.stash(p, classOf[RexNode]) }.asJava
-    val arrayExpr: NewArrayExpression =
-      Expressions.newArrayInit(classOf[RexNode], projectsConstantList)
-    val projectsExpression: MethodCallExpression = Expressions.call(
-      BuiltInMethod.ARRAYS_AS_LIST.method, arrayExpr)
+    // val projectsConstantList: JList[Expression] = projects.asScala.map { p =>
+    //   implementor.stash(p, classOf[RexNode]) }.asJava
+    // val arrayExpr: NewArrayExpression =
+    //   Expressions.newArrayInit(classOf[RexNode], projectsConstantList)
+    // val projectsExpression: MethodCallExpression = Expressions.call(
+    //   BuiltInMethod.ARRAYS_AS_LIST.method, arrayExpr)
 
-    val project: Method = classOf[MapTable].getMethod("project", classOf[JList[RexNode]])
+    val project: Method = classOf[MapTable].getMethod("project")
 
     implementor.result(
       physType,
       Blocks.toBlock(
         Expressions.call(mapImplementor.table.getExpression(classOf[MapTable]),
-          project, projectsExpression)))
+          project)))
 
   }
 

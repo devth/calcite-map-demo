@@ -31,12 +31,12 @@ class MapEnumerator(projects: JList[RexNode] = Seq.empty.asJava) extends Enumera
 
   // Calcite doesn't like this because we're not returning the expected
   // [Ljava.lang.Object], but we could easily fix that...
-  val iterator = data.toIterator
+  val iterator = data.map(_.values.toArray).toIterator
 
-  private var _current: AnyRef = null
+  private var _current: Array[AnyRef] = null
 
   // Enumerator impl
-  def current: AnyRef = _current
+  def current: Array[AnyRef] = _current
 
   def moveNext(): Boolean = {
     if (iterator.hasNext) {

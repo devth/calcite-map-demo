@@ -8,8 +8,8 @@ import java.sql.ResultSet
 import java.sql.SQLException
 import java.sql.Statement
 
-import net.hydromatic.optiq.SchemaPlus
-import net.hydromatic.optiq.jdbc.OptiqConnection
+import org.apache.calcite.schema.SchemaPlus
+import org.apache.calcite.jdbc.CalciteConnection
 
 import org.scalatest.FunSuite
 
@@ -18,10 +18,10 @@ import com.typesafe.scalalogging.StrictLogging
 class TestMapCalcite extends FunSuite with StrictLogging {
 
   val schema = new MapSchema
-  Class.forName("net.hydromatic.optiq.jdbc.Driver")
+  Class.forName("org.apache.calcite.jdbc.Driver")
   val connection = DriverManager.getConnection("jdbc:calcite:")
-  val optiqConnection: OptiqConnection = connection.unwrap(classOf[OptiqConnection])
-  val rootSchema: SchemaPlus = optiqConnection.getRootSchema()
+  val calciteConnection: CalciteConnection = connection.unwrap(classOf[CalciteConnection])
+  val rootSchema: SchemaPlus = calciteConnection.getRootSchema()
   rootSchema.add(schema.name, schema)
   val statement = connection.createStatement();
 

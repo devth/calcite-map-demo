@@ -40,10 +40,10 @@ class MapTable(name: String) extends AbstractQueryableTable(classOf[Seq[AnyRef]]
       relOptTable, this)
   }
 
-  def project(projects: JList[RexNode]): Enumerable[AnyRef] = {
+  def project(): Enumerable[AnyRef] = {
     new AbstractEnumerable[AnyRef] {
       def enumerator(): Enumerator[AnyRef] =
-        new MapEnumerator(projects).asInstanceOf[Enumerator[AnyRef]]
+        new MapEnumerator(null).asInstanceOf[Enumerator[AnyRef]]
     }
   }
 
