@@ -1,18 +1,17 @@
 package devth.calcite
 
-import net.hydromatic.linq4j.{Enumerator, AbstractEnumerable, Enumerable}
-import net.hydromatic.linq4j.QueryProvider
-import net.hydromatic.optiq._
-import net.hydromatic.optiq.impl.AbstractTableQueryable
-import net.hydromatic.optiq.impl.java.AbstractQueryableTable
-import net.hydromatic.optiq.rules.java.EnumerableConvention
-import net.hydromatic.optiq.rules.java.JavaRules
+import org.apache.calcite.adapter.enumerable.{EnumerableConvention, EnumerableRules}
+import org.apache.calcite.adapter.java.AbstractQueryableTable
+import org.apache.calcite.linq4j.QueryProvider
+import org.apache.calcite.linq4j.{Enumerator, AbstractEnumerable, Enumerable}
+import org.apache.calcite.plan.RelOptTable
+import org.apache.calcite.rel.RelNode
+import org.apache.calcite.rel.`type`.{RelDataType, RelDataTypeFactory}
+import org.apache.calcite.rex.RexNode
+import org.apache.calcite.schema.{TranslatableTable, SchemaPlus}
+import org.apache.calcite.schema.impl.AbstractTableQueryable
+import org.apache.calcite.sql.`type`.SqlTypeName
 
-import org.eigenbase.rex.RexNode
-import org.eigenbase.rel.RelNode
-import org.eigenbase.relopt.RelOptTable
-import org.eigenbase.reltype.{RelDataType, RelDataTypeFactory}
-import org.eigenbase.sql.`type`.SqlTypeName
 import java.util.{List => JList}
 
 class MapTable(name: String) extends AbstractQueryableTable(classOf[Seq[AnyRef]]) with TranslatableTable {

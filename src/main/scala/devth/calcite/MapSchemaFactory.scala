@@ -1,6 +1,8 @@
 package devth.calcite
 
-import net.hydromatic.optiq._
+
+import org.apache.calcite.schema.{SchemaFactory, SchemaPlus, Schema}
+
 import scala.collection.JavaConverters._
 
 class MapSchemaFactory extends SchemaFactory {

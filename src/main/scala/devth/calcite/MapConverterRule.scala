@@ -1,15 +1,8 @@
 package devth.calcite
 
-import org.eigenbase.rel.{RelNode, ProjectRel, ProjectRelBase}
-// import org.eigenbase.relopt.RelOptRule
-import org.eigenbase.relopt.Convention
-import org.eigenbase.relopt.RelTrait
-import org.eigenbase.relopt.RelTraitSet
-import org.eigenbase.rel.convert.ConverterRule
-
-import com.typesafe.scalalogging.StrictLogging
-import org.eigenbase.relopt.RelOptRule.{operand, none}
-import scala.collection.JavaConverters._
+import org.apache.calcite.rel.RelNode
+import org.apache.calcite.plan.{Convention, RelTrait}
+import org.apache.calcite.rel.convert.ConverterRule
 
 /* Base class for planner rules that convert a relational expression to
  * MapDB calling convention. */

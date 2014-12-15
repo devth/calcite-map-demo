@@ -1,18 +1,17 @@
 package devth.calcite
 
-import net.hydromatic.linq4j.expressions._
-
-import net.hydromatic.optiq.BuiltinMethod
-import net.hydromatic.optiq.prepare.OptiqPrepareImpl
-import net.hydromatic.optiq.rules.java._
-import net.hydromatic.optiq.runtime.Hook
-
-import org.eigenbase.rex.RexNode
-import org.eigenbase.rel.RelNode
-import org.eigenbase.rel.convert.ConverterRelImpl
-import org.eigenbase.relopt._
-import org.eigenbase.reltype.RelDataType
-import org.eigenbase.util.Pair
+import org.apache.calcite.linq4j.tree.{Expressions, Expression, Blocks,
+  NewArrayExpression, MethodCallExpression}
+import org.apache.calcite.util.BuiltInMethod
+import org.apache.calcite.adapter.enumerable._
+import org.apache.calcite.runtime.Hook
+import org.apache.calcite.rex.RexNode
+import org.apache.calcite.rel.RelNode
+import org.apache.calcite.rel.convert.ConverterImpl
+import org.apache.calcite.plan._
+import org.apache.calcite.rel.`type`.RelDataType
+import org.apache.calcite.util.Pair
+import org.apache.calcite.adapter.enumerable.EnumerableRel.{Result, Prefer}
 
 import java.lang.reflect.Method
 import java.util.{List => JList}
@@ -20,12 +19,10 @@ import java.util.{List => JList}
 import scala.collection.JavaConverters._
 import com.typesafe.scalalogging.StrictLogging
 
-import net.hydromatic.optiq.rules.java.EnumerableRel.{Result, Prefer}
-
 class MapToEnumerableConverter(cluster: RelOptCluster,
     traits: RelTraitSet,
     input: RelNode)
-  extends ConverterRelImpl(cluster, ConventionTraitDef.INSTANCE, traits, input)
+  extends ConverterImpl(cluster, ConventionTraitDef.INSTANCE, traits, input)
   with StrictLogging with EnumerableRel {
 
   override def copy(traitSet: RelTraitSet, inputs: java.util.List[RelNode]): RelNode =
@@ -33,7 +30,7 @@ class MapToEnumerableConverter(cluster: RelOptCluster,
 
   def implement(implementor: EnumerableRelImplementor, pref: Prefer): Result = {
     val mapImplementor = new MapRel.Implementor
-    mapImplementor.visitChild(0, getChild)
+    mapImplementor.visitChild(0, getInput)
 
     val rowType = getRowType()
     val physType: PhysType = PhysTypeImpl.of(
@@ -60,7 +57,7 @@ class MapToEnumerableConverter(cluster: RelOptCluster,
     val arrayExpr: NewArrayExpression =
       Expressions.newArrayInit(classOf[RexNode], projectsConstantList)
     val projectsExpression: MethodCallExpression = Expressions.call(
-      BuiltinMethod.ARRAYS_AS_LIST.method, arrayExpr)
+      BuiltInMethod.ARRAYS_AS_LIST.method, arrayExpr)
 
     val project: Method = classOf[MapTable].getMethod("project", classOf[JList[RexNode]])
 

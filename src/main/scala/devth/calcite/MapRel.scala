@@ -1,10 +1,10 @@
 package devth.calcite
 
-import org.eigenbase.rex.RexNode
-import org.eigenbase.rel.RelNode
-import org.eigenbase.relopt.Convention
-import org.eigenbase.relopt.RelOptTable
-import org.eigenbase.util.Pair
+import org.apache.calcite.rex.RexNode
+import org.apache.calcite.rel.RelNode
+import org.apache.calcite.plan.Convention
+import org.apache.calcite.plan.RelOptTable
+import org.apache.calcite.util.Pair
 
 import java.util.ArrayList
 import java.util.{List => JList}

@@ -1,7 +1,7 @@
 package devth.calcite
 
-import net.hydromatic.optiq.Table
-import net.hydromatic.optiq.impl.AbstractSchema
+import org.apache.calcite.schema.Table
+import org.apache.calcite.schema.impl.AbstractSchema
 
 import scala.collection.JavaConverters._
 

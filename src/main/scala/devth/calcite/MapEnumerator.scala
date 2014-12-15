@@ -1,10 +1,12 @@
 package devth.calcite
 
-import org.eigenbase.rex.RexNode
-import net.hydromatic.linq4j.Enumerator
+import org.apache.calcite.rex.RexNode
+import org.apache.calcite.linq4j.Enumerator
+
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 import com.typesafe.scalalogging.StrictLogging
+
 
 import java.util.{Map => JMap, List => JList, HashMap => JHashMap}
 

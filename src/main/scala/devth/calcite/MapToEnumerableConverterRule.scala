@@ -1,10 +1,9 @@
 package devth.calcite
 
-import net.hydromatic.optiq.rules.java.EnumerableConvention
-
-import org.eigenbase.rel.RelNode
-import org.eigenbase.rel.convert.ConverterRule
-import org.eigenbase.relopt.RelTraitSet
+import org.apache.calcite.rel.RelNode
+import org.apache.calcite.rel.convert.ConverterRule
+import org.apache.calcite.plan.RelTraitSet
+import org.apache.calcite.adapter.enumerable.EnumerableConvention
 
 /**
  * Rule to convert a relational expression from
