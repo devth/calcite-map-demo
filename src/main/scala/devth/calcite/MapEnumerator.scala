@@ -1,5 +1,6 @@
 package devth.calcite
 
+import org.eigenbase.rex.RexNode
 import net.hydromatic.linq4j.Enumerator
 import scala.collection.JavaConverters._
 import scala.collection.mutable
@@ -7,16 +8,16 @@ import com.typesafe.scalalogging.StrictLogging
 
 import java.util.{Map => JMap, List => JList, HashMap => JHashMap}
 
-class MapEnumerator(fields: JList[String] = Seq.empty.asJava) extends Enumerator[AnyRef]
+class MapEnumerator(projects: JList[RexNode] = Seq.empty.asJava) extends Enumerator[AnyRef]
   with StrictLogging {
 
-  // TODO: only lookup projected fields in `fields`
-  logger.info(s"MapEnumerator with fields $fields")
+  // TODO: only lookup projected projects in `projects`
+  logger.info(s"MapEnumerator with projects $projects")
   type Row = JMap[String, java.lang.Object]
 
   // Demonstrates:
   // 1. Nested data structures
-  // 2. Possibly missing fields (e.g. coords only present for Seattle)
+  // 2. Possibly missing projects (e.g. coords only present for Seattle)
   val data: Seq[Row] = Seq(
     Map("name" -> "foo", "address" -> Map("city" -> "seattle", "state" -> "wa",
       "coords" -> Map("lat" -> "47.609722", "long" -> "-122.333056").asJava).asJava),

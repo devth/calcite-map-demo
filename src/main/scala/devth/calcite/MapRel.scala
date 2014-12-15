@@ -1,12 +1,13 @@
 package devth.calcite
 
+import org.eigenbase.rex.RexNode
 import org.eigenbase.rel.RelNode
 import org.eigenbase.relopt.Convention
 import org.eigenbase.relopt.RelOptTable
 import org.eigenbase.util.Pair
 
 import java.util.ArrayList
-import java.util.List
+import java.util.{List => JList}
 
 /**
  * Relational expression that uses Map calling convention.
@@ -24,9 +25,15 @@ object MapRel {
 
     // hold whatever data structures we need here to pass into the enumerator
     // later on
-    @volatile private var fields: Seq[String] = Seq.empty
-    def addFields(fs: Seq[String]) = fields ++= fs
-    def getFields = fields
+
+    // @volatile private var fields: Seq[String] = Seq.empty
+    // def addFields(fs: Seq[String]) = fields ++= fs
+    // def getFields = fields
+
+    @volatile private var projects: JList[RexNode] = null
+    def setProjects(ps: JList[RexNode]) { projects = ps }
+    def getProjects = projects
+
 
     def visitChild(ordinal: Int, input: RelNode) {
       assert(ordinal == 0) // ?

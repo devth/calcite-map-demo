@@ -7,6 +7,7 @@ import net.hydromatic.optiq.prepare.OptiqPrepareImpl
 import net.hydromatic.optiq.rules.java._
 import net.hydromatic.optiq.runtime.Hook
 
+import org.eigenbase.rex.RexNode
 import org.eigenbase.rel.RelNode
 import org.eigenbase.rel.convert.ConverterRelImpl
 import org.eigenbase.relopt._
@@ -39,35 +40,35 @@ class MapToEnumerableConverter(cluster: RelOptCluster,
       implementor.getTypeFactory(), rowType,
       pref.prefer(JavaRowFormat.CUSTOM))
 
-    val fields = mapImplementor.getFields
-    logger.info(s"fields from implementor: $fields")
+    val projects = mapImplementor.getProjects
+    logger.info(s"projects from implementor: $projects")
 
     // `fields` should actually be a nested-list-like data structure that could
     // represent nested projections:
     // ITEM(ITEM($0, 'address'), 'city')" -> "EXPR$0
-
     // How could such a structure be represented in Linq4j?
     // Here's an example of an Algebraic Data Type in Scala that could represent
     // it well, but could not (guessing?) be represented in Linq4j:
     // Represents a potentially nested projection (e.g. address.city )
-    sealed trait NestedProjection
-    case class Field(fieldName: String) extends NestedProjection
-    case class NestedField(field: Field, child: NestedProjection) extends NestedProjection
+    // sealed trait NestedProjection
+    // case class Field(fieldName: String) extends NestedProjection
+    // case class NestedField(field: Field, child: NestedProjection) extends NestedProjection
 
 
-    val fieldConstantList: JList[Expression] = constantList(fields)
+    val projectsConstantList: JList[Expression] = projects.asScala.map { p =>
+      implementor.stash(p, classOf[RexNode]) }.asJava
     val arrayExpr: NewArrayExpression =
-      Expressions.newArrayInit(classOf[String], fieldConstantList)
-    val fieldsExpression: MethodCallExpression = Expressions.call(
+      Expressions.newArrayInit(classOf[RexNode], projectsConstantList)
+    val projectsExpression: MethodCallExpression = Expressions.call(
       BuiltinMethod.ARRAYS_AS_LIST.method, arrayExpr)
 
-    val project: Method = classOf[MapTable].getMethod("project", classOf[JList[String]])
+    val project: Method = classOf[MapTable].getMethod("project", classOf[JList[RexNode]])
 
     implementor.result(
       physType,
       Blocks.toBlock(
         Expressions.call(mapImplementor.table.getExpression(classOf[MapTable]),
-          project, fieldsExpression)))
+          project, projectsExpression)))
 
   }
 

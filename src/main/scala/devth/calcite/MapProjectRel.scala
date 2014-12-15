@@ -32,8 +32,11 @@ class MapProjectRel(cluster: RelOptCluster, traitSet: RelTraitSet,
 
     //  How to represent nested fields? e.g.
     //  ITEM(ITEM($0, 'address'), 'city')" -> "EXPR$0
-    val fields: Seq[String] = getNamedProjects.asScala.map { pair => pair.right }
-    implementor.addFields(fields)
+    // val fields: Seq[String] = getNamedProjects.asScala.map { pair => pair.right }
+    // implementor.addFields(fields)
+
+    implementor.setProjects(getProjects)
+
 
   }
 }

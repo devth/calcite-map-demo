@@ -8,6 +8,7 @@ import net.hydromatic.optiq.impl.java.AbstractQueryableTable
 import net.hydromatic.optiq.rules.java.EnumerableConvention
 import net.hydromatic.optiq.rules.java.JavaRules
 
+import org.eigenbase.rex.RexNode
 import org.eigenbase.rel.RelNode
 import org.eigenbase.relopt.RelOptTable
 import org.eigenbase.reltype.{RelDataType, RelDataTypeFactory}
@@ -40,10 +41,10 @@ class MapTable(name: String) extends AbstractQueryableTable(classOf[Seq[AnyRef]]
       relOptTable, this)
   }
 
-  def project(fields: JList[String]): Enumerable[AnyRef] = {
+  def project(projects: JList[RexNode]): Enumerable[AnyRef] = {
     new AbstractEnumerable[AnyRef] {
       def enumerator(): Enumerator[AnyRef] =
-        new MapEnumerator(fields).asInstanceOf[Enumerator[AnyRef]]
+        new MapEnumerator(projects).asInstanceOf[Enumerator[AnyRef]]
     }
   }
 
