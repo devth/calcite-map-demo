@@ -34,39 +34,19 @@ class MapToEnumerableConverter(cluster: RelOptCluster,
 
     val rowType = getRowType()
     val physType: PhysType = PhysTypeImpl.of(
-      implementor.getTypeFactory(), rowType,
-      pref.prefer(JavaRowFormat.CUSTOM))
+      implementor.getTypeFactory(), rowType, pref.prefer(JavaRowFormat.CUSTOM))
 
     val projects = mapImplementor.getProjects
     logger.info(s"projects from implementor: $projects")
 
-    // `fields` should actually be a nested-list-like data structure that could
-    // represent nested projections:
-    // ITEM(ITEM($0, 'address'), 'city')" -> "EXPR$0
-    // How could such a structure be represented in Linq4j?
-    // Here's an example of an Algebraic Data Type in Scala that could represent
-    // it well, but could not (guessing?) be represented in Linq4j:
-    // Represents a potentially nested projection (e.g. address.city )
-    // sealed trait NestedProjection
-    // case class Field(fieldName: String) extends NestedProjection
-    // case class NestedField(field: Field, child: NestedProjection) extends NestedProjection
-
-
-    // val projectsConstantList: JList[Expression] = projects.asScala.map { p =>
-    //   implementor.stash(p, classOf[RexNode]) }.asJava
-    // val arrayExpr: NewArrayExpression =
-    //   Expressions.newArrayInit(classOf[RexNode], projectsConstantList)
-    // val projectsExpression: MethodCallExpression = Expressions.call(
-    //   BuiltInMethod.ARRAYS_AS_LIST.method, arrayExpr)
-
-    val project: Method = classOf[MapTable].getMethod("project")
+    val projectMethod: Method = classOf[MapTable].getMethod("project", classOf[JList[RexNode]])
 
     implementor.result(
       physType,
       Blocks.toBlock(
         Expressions.call(mapImplementor.table.getExpression(classOf[MapTable]),
-          project)))
-
+          projectMethod,
+            implementor.stash[JList[RexNode]](projects, classOf[JList[RexNode]]))))
   }
 
   private def constantList(values: Seq[String]): JList[Expression] =
