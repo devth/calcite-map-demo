@@ -10,11 +10,12 @@ import com.typesafe.scalalogging.StrictLogging
 
 import java.util.{Map => JMap, List => JList, HashMap => JHashMap}
 
-class MapEnumerator(projects: JList[RexNode] = Seq.empty.asJava) extends Enumerator[AnyRef]
+class MapEnumerator(projects: JList[RexNode] = Seq.empty.asJava) extends Enumerator[Any]
   with StrictLogging {
 
   // TODO: only lookup projected projects in `projects`
   logger.info(s"MapEnumerator with projects $projects")
+
   type Row = JMap[String, java.lang.Object]
 
   // Demonstrates:
@@ -31,12 +32,20 @@ class MapEnumerator(projects: JList[RexNode] = Seq.empty.asJava) extends Enumera
 
   // Calcite doesn't like this because we're not returning the expected
   // [Ljava.lang.Object], but we could easily fix that...
-  val iterator = data.map(_.values.toArray).toIterator
+  // val iterator = data.map(_.values.toArray).toIterator
 
-  private var _current: Array[AnyRef] = null
+  // Produce a static Array containing only the name. Later we could implement
+  // the actual projection by flattening the map via cartesian product.
+  val iterator = {
+    // data.map(jm => Array(jm.get("name"))).toIterator
+    data.map(jm => Array[Any](jm.get("name"), jm.get("address").asInstanceOf[JMap[String, Any]].get("city")))
+  }.toIterator
+
+
+  private var _current: Array[Any] = null
 
   // Enumerator impl
-  def current: Array[AnyRef] = _current
+  def current: Array[Any] = _current
 
   def moveNext(): Boolean = {
     if (iterator.hasNext) {

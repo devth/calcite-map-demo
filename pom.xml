@@ -13,7 +13,7 @@
     <scala.version>2.11.2</scala.version>
     <scala.major>2.11</scala.major>
     <slf4j.version>1.7.6</slf4j.version>
-    <calcite.version>1.0.0-incubating-SNAPSHOT</calcite.version>
+    <calcite.version>1.0.0-incubating</calcite.version>
   </properties>
 
 
@@ -113,6 +113,11 @@
     <dependency>
       <groupId>org.apache.calcite</groupId>
       <artifactId>calcite-core</artifactId>
+      <version>${calcite.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.calcite</groupId>
+      <artifactId>calcite-avatica-server</artifactId>
       <version>${calcite.version}</version>
     </dependency>
     <dependency>
