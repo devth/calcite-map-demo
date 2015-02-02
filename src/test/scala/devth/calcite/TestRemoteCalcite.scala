@@ -10,7 +10,7 @@ import java.sql.DriverManager
 import org.apache.calcite.avatica.server.{Main, HttpServer}
 
 
-class TryRemoteCalcite extends FunSuite with BeforeAndAfterAll with StrictLogging {
+class TestRemoteCalcite extends FunSuite with BeforeAndAfterAll with StrictLogging {
 
   var start: Option[HttpServer] = None
 
@@ -55,8 +55,7 @@ class TryRemoteCalcite extends FunSuite with BeforeAndAfterAll with StrictLoggin
     schemas.close()
 
 
-    val query = "select count(_MAP['name']) as rowcount from \"foo\".\"foo\""
-    // val query = "values (1, 'a'), (cast(null as integer), 'b')"
+    val query = "select _MAP['name'], _MAP['address']['city'] as rowcount from \"foo\".\"foo\""
     val queryResults = connection.createStatement().executeQuery(query)
     while (queryResults.next) {
       logger.info(queryResults.getString(0))

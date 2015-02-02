@@ -42,6 +42,7 @@ class MapEnumerator(projects: JList[RexNode] = Seq.empty.asJava) extends Enumera
       val name: AnyRef = jm.get("name")
       val city: AnyRef = jm.get("address").asInstanceOf[JMap[String, AnyRef]].get("city")
 
+      // Array[AnyRef](name, city)
       Array[AnyRef](name, city)
    }
   }.toIterator
