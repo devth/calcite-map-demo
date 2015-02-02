@@ -38,14 +38,19 @@ class MapEnumerator(projects: JList[RexNode] = Seq.empty.asJava) extends Enumera
   // the actual projection by flattening the map via cartesian product.
   val iterator = {
     // data.map(jm => Array(jm.get("name"))).toIterator
-    data.map(jm => Array[Any](jm.get("name"), jm.get("address").asInstanceOf[JMap[String, Any]].get("city")))
+    data.map { jm =>
+      val name: AnyRef = jm.get("name")
+      val city: AnyRef = jm.get("address").asInstanceOf[JMap[String, AnyRef]].get("city")
+
+      Array[AnyRef](name, city)
+   }
   }.toIterator
 
 
-  private var _current: Array[Any] = null
+  private var _current: Array[AnyRef] = null
 
   // Enumerator impl
-  def current: Array[Any] = _current
+  def current: Array[AnyRef] = _current
 
   def moveNext(): Boolean = {
     if (iterator.hasNext) {
