@@ -43,15 +43,15 @@ class MapEnumerator(projects: JList[RexNode] = Seq.empty.asJava) extends Enumera
       val city: AnyRef = jm.get("address").asInstanceOf[JMap[String, AnyRef]].get("city")
 
       // Array[AnyRef](name, city)
-      Array[AnyRef](name, city)
+      Array[Any](name, city)
    }
   }.toIterator
 
 
-  private var _current: Array[AnyRef] = null
+  private var _current: AnyRef = null
 
   // Enumerator impl
-  def current: Array[AnyRef] = _current
+  def current: AnyRef = _current
 
   def moveNext(): Boolean = {
     if (iterator.hasNext) {
