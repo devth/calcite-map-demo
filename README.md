@@ -2,10 +2,13 @@
 
 Demonstrates querying nested data with Calcite.
 
-## Run the Test
+## Run the Tests
 
 ```shell
-mvn -Dtest=TestMapCalcite -Dsurefire.useFile=false test
+mvn test -Dsuites=devth.calcite.TestRemoteCalcite 
+
+mvn test -Dsuites=devth.calcite.TestMapCalcite 
+
 ```
 
 ## Open a sqlline shell
