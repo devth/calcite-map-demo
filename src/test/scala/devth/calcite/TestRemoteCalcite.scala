@@ -30,15 +30,15 @@ class TestRemoteCalcite extends FunSuite with BeforeAndAfterAll with StrictLoggi
 
     val md: DatabaseMetaData = connection.getMetaData()
 
-    val crs: ResultSet = md.getCatalogs
-    while (crs.next()) {
-      logger.info(s"catalogs: ${crs.getString(1)}")
-    }
+    // val crs: ResultSet = md.getCatalogs
+    // while (crs.next()) {
+    //   logger.info(s"catalogs: ${crs.getString(1)}")
+    // }
 
-    val rs: ResultSet = md.getTables(null, null, "%", null)
-    while (rs.next()) {
-      logger.info(s"table: ${rs.getString(3)}")
-    }
+    // val rs: ResultSet = md.getTables(null, null, "%", null)
+    // while (rs.next()) {
+    //   logger.info(s"table: ${rs.getString(3)}")
+    // }
 
     val schemas = md.getSchemas
     val schemaMetaData = schemas.getMetaData
@@ -58,8 +58,9 @@ class TestRemoteCalcite extends FunSuite with BeforeAndAfterAll with StrictLoggi
     val query = "select _MAP['name'], _MAP['address']['city'] as rowcount from \"foo\".\"foo\""
     val queryResults = connection.createStatement().executeQuery(query)
     while (queryResults.next) {
-      logger.info(queryResults.getString(0))
-      // logger.info(queryResults.getString(1))
+      logger.info("query row:")
+      logger.info(queryResults.getString(1))
+      logger.info(queryResults.getString(2))
     }
 
     assert(!connection.isClosed)

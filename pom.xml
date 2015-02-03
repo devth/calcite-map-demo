@@ -1,7 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-
   <modelVersion>4.0.0</modelVersion>
   <groupId>devth.calite</groupId>
   <artifactId>calite-map-demo</artifactId>
@@ -13,9 +12,8 @@
     <scala.version>2.11.2</scala.version>
     <scala.major>2.11</scala.major>
     <slf4j.version>1.7.6</slf4j.version>
-    <calcite.version>1.0.0-incubating</calcite.version>
+    <calcite.version>1.1-incubating-SNAPSHOT</calcite.version>
   </properties>
-
 
   <dependencyManagement>
     <dependencies>
@@ -39,6 +37,13 @@
         <artifactId>scala-logging_${scala.major}</artifactId>
         <version>3.1.0</version>
       </dependency>
+
+      <!-- <dependency> -->
+      <!--   <groupId>com.fasterxml.jackson.module</groupId> -->
+      <!--   <artifactId>jackson-module-scala_${scala.major}</artifactId> -->
+      <!--   <version>2.4.2</version> -->
+      <!-- </dependency> -->
+
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -297,6 +302,7 @@
           </systemProperties>
           <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
           <junitxml>.</junitxml>
+          <debugForkedProcess>true</debugForkedProcess>
           <filereports>WDF TestSuite.txt</filereports>
         </configuration>
         <executions>
